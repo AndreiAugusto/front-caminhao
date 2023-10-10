@@ -10,7 +10,7 @@ export function Dashboard() {
     return (
         <main className="main-container">
             <Header/>
-            <div className="">
+            <div>
                 <div className="p-3 w-100">
                     <div className="main-cards">
                         <div className="card">

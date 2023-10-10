@@ -10,7 +10,7 @@ import { useContext } from 'react';
 import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 
 export function Register () {
-    const { register, handleSubmit, watch, formState: { errors } } = useForm();
+    const { register, handleSubmit, formState: { errors } } = useForm();
     const { loading, createUser } = useContext(AuthContext);
 
     const onSubmit = async (data) => {
@@ -69,6 +69,7 @@ export function Register () {
                                     message:'Email obrigatorio!'
                                 },
                                 pattern:{
+                                    // eslint-disable-next-line
                                     value: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
                                     message:'Email inválido!'
                                 }

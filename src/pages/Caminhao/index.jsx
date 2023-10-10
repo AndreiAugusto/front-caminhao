@@ -1,13 +1,16 @@
-import React from "react";
-import { useState } from "react";
+import React, { useContext } from "react";
+import { useState, useEffect } from "react";
 import { Header } from "../../components/Header/header";
 import { Button, Col, Modal, Row } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { Input } from "../../components/Input/Input";
-import { createCaminhao } from "../../services/caminhao-service";
+import { createCaminhao, getCaminhoes, updateCaminhao } from "../../services/caminhao-service";
 import { ToastContainer, toast } from 'react-toastify';
+import { AuthContext } from '../../contexts/AuthContext';
+import { MeuModal } from "../../components/MeuModal/MeuModal";
 
 export function Caminhao() {    
+    const { logout } = useContext(AuthContext);
     const {
         register,
         handleSubmit,
@@ -15,6 +18,24 @@ export function Caminhao() {
     } = useForm();
 
     const [isCreated, setIsCreated] = useState(false);
+    const [isUpdated, setIsUpdated] = useState(false);
+    const [ordemId, setOrdemId] = useState('decrescente');
+    const [caminhoes, setCaminhoes] = useState();
+    const [caminhaoEdit, setCaminhaoEdit] = useState();   
+
+    useEffect(()=>{
+        findCaminhoes();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[]);
+
+    async function findCaminhoes(){
+        try {
+            const result = await getCaminhoes(ordemId);
+            setCaminhoes(result.data)
+        } catch (error) {
+            logout();            
+        }
+    }
 
     async function addCaminhao(data){
         try {
@@ -30,22 +51,76 @@ export function Caminhao() {
         }
     }
 
+
+    const handleOrdem = () =>{
+        if( ordemId === 'crescente'){
+            setOrdemId('decrescente');
+            findCaminhoes();
+        } else {
+            setOrdemId('crescente');
+            findCaminhoes();
+        }
+    }
+
     return (
         <main className="main-container">
             <Header/>
-            <div className="d-flex flex-grow-1">
-                <div className="p-3 w-100">
-                    <Row>
-                        <Col md={12} className="mt-2 d-flex justify-content-center">
-                            <Button
-                            onClick={()=>setIsCreated(true)}>
-                                Cadastrar Caminhão
-                            </Button>
-                        </Col>
-                    </Row>
-                </div>
+            <div className="p-3">
+                <Row>
+                    <Col md={12} className="mt-2 d-flex justify-content-center">
+                        <Button
+                        onClick={()=>setIsCreated(true)}>
+                            Cadastrar Caminhão
+                        </Button>
+                    </Col>
+                </Row>
             </div>
+            <Col md={10} className="table-responsive m-auto">
+                <table className="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col" className="cursor-pointer" onClick={handleOrdem} style={{ width: '10%' }}>Id</th>
+                            <th scope="col" style={{ width: '30%' }}>Caminhão</th>
+                            <th scope="col" style={{ width: '30%' }}>placa</th>
+                            <th scope="col" style={{ width: '30%' }}>Ano</th>
+                            <th scope="col"></th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
 
+                    {caminhoes && caminhoes.length > 0 ? (
+                        caminhoes.map((caminhao)=>(
+                            <tr key={caminhao.id}>
+                                <th scope="col">{caminhao.id}</th>
+                                <th scope="col">{caminhao.modelo}</th>
+                                <th scope="col">{caminhao.placa}</th>
+                                <th scope="col">{caminhao.ano}</th>
+                                <th scope="col" className="p-1">
+                                    <Button scope="col" onClick={()=>{
+                                        setCaminhaoEdit(caminhao);
+                                        setIsUpdated(true);
+                                    }}>Editar</Button>
+                                </th>
+                                <th scope="col" className="p-1">
+                                    <Button className="btn btn-danger" scope="col">
+                                        Deletar
+                                    </Button>
+                                </th>
+                                
+                                
+                            </tr>
+
+                        ))
+                    ):(
+                        <p>Não há caminhões</p>
+                    )}
+
+                    </tbody>
+                </table>
+            </Col>
+
+            {/* Modal de Criar */}
             <Modal
                 show={isCreated}
                 onHide={() => setIsCreated(false)}
@@ -115,6 +190,90 @@ export function Caminhao() {
                 </form>
             </Modal>
             
+            {/* Modal de Editar */}
+            {/* <Modal
+                show={isUpdated}
+                onHide={() => setIsUpdated(false)}
+            >
+                <Modal.Header className="justify-content-center text-primary">
+                    <Modal.Title>
+                        Editar caminhão
+                    </Modal.Title>
+                </Modal.Header>
+                <form
+                    className="m-auto w-100"
+                    noValidate
+                    onSubmit={handleSubmit(editCaminhao)}
+                >
+                    <Modal.Body>
+                        <Input 
+                            label='Caminhão'
+                            type='text'
+                            defaultValue={caminhaoEdit? caminhaoEdit.modelo : ''}
+                            name='modelo'
+                            error={errors.modelo}
+                            validations={register('modelo', {
+                                required:{
+                                    value: true,
+                                    message:'Nome do caminhão obrigatório!'
+                                }
+                            })}
+                        />
+                        <Input 
+                            label='Placa do caminhão'
+                            type='text'
+                            name='placa'
+                            defaultValue={caminhaoEdit ? caminhaoEdit.placa : ''}
+                            error={errors.placa}
+                            validations={register('placa', {
+                                required:{
+                                    value: true,
+                                    message:'Placa do caminhão é obrigatoria!'
+                                }
+                            })}
+                        />
+                        <Input 
+                            label='Ano do caminhão'
+                            type='date'
+                            name='ano'
+                            defaultValue={caminhaoEdit ? caminhaoEdit.ano : ''}
+                            error={errors.ano}
+                            validations={register('ano', {
+                                required:{
+                                    value: true,
+                                    message:'Ano do caminhão é obrigatorio!'
+                                }
+                            })}
+                        />
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button
+                            variant="secondary"
+                            onClick={() => setIsUpdated(false)}
+                        >
+                            Fechar
+                        </Button>
+                        <Button variant="primary" type="submit">
+                            Editar
+                        </Button>
+                    </Modal.Footer>                
+                </form>
+            </Modal> */}
+
+            <MeuModal 
+                show={isUpdated}
+                onHide={() => setIsUpdated(false)}
+                btnConcluir='Editar'
+                modalTitle='Editar Caminhão'
+                label='Caminhão'
+                defaultValue={caminhaoEdit ? caminhaoEdit.modelo : ''}
+                name='modelo'
+                error={errors.modelo}
+
+            />
+
+            {/* Modal de Confirmar Delete */}
+
             <ToastContainer
                 position="top-right"
                 autoClose={5000}

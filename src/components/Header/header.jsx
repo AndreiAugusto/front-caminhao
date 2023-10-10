@@ -1,7 +1,9 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Container, Nav, Navbar } from 'react-bootstrap';
+import { AuthContext } from '../../contexts/AuthContext';
 
 export function Header() {
+  const { logout } = useContext(AuthContext);
 
   return (
     <Navbar bg="primary" data-bs-theme="dark" expand="md" >
@@ -13,6 +15,7 @@ export function Header() {
             <Nav.Link href="/caminhao">Caminhões</Nav.Link>
             <Nav.Link href="/manutencao">Manutenções</Nav.Link>
             <Nav.Link href="/oficina">Oficinas</Nav.Link>
+            <Nav.Link onClick={logout}>Sair</Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Container>

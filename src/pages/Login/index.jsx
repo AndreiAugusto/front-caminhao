@@ -1,7 +1,7 @@
 import { Input } from '../../components/Input/Input'
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import { AuthContext } from '../../contexts/AuthContext';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { useForm } from 'react-hook-form';
@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom';
 import { useContext } from 'react';
 
 export function Login () {
-    const { register, handleSubmit, watch, formState: { errors } } = useForm();
+    const { register, handleSubmit, formState: { errors } } = useForm();
     const { login, loading } = useContext(AuthContext);
 
     return (
@@ -43,6 +43,7 @@ export function Login () {
                             message:'Email obrigatorio!'
                         },
                         pattern:{
+                            // eslint-disable-next-line
                             value: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
                             message:'Email inválido!'
                         }

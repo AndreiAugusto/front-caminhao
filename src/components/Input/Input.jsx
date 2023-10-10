@@ -7,6 +7,7 @@ export function Input(props) {
                 <Form.Control 
                     type={props.type} 
                     placeholder={props.placeholder}
+                    defaultValue={props.defaultValue}
                     name={props.name}
                     isInvalid={!!props.error}
                     {...props.validations}
