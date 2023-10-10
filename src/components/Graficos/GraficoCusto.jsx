@@ -3,7 +3,6 @@ import ReactApexChart from 'react-apexcharts';
 
 export function MyBarChart({ custoAgregados }) {
   if (!custoAgregados) {
-    console.log('custosAgregados não está definido');
     return null;
   }
 

@@ -3,7 +3,6 @@ import ReactApexChart from 'react-apexcharts';
 
 export function MyPieChart({ dadosAgregados }) {
   if (!dadosAgregados) {
-    console.log('dados agregados não estão definidos');
     return null;
   }
 
