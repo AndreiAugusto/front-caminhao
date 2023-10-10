@@ -2,33 +2,32 @@ import React from 'react';
 import '../../app.css';
 import { AuthContext } from '../../contexts/AuthContext';
 import { useContext } from 'react';
-import {BsGrid1X2Fill} from 'react-icons/bs';
 import {BiLogOut} from 'react-icons/bi';
-import {GiPoliceBadge} from 'react-icons/gi';
+import { useNavigate } from 'react-router-dom';
 
 export function Sidebar({openSidebarToggle, OpenSidebar}) {
 
     const { logout } = useContext(AuthContext);
+    const navigate = useNavigate();
 
   return (
     <aside id="sidebar" className={openSidebarToggle ? "sidebar-responsive": ""}>
-        <div className='sidebar-title'>
-            <div className='sidebar-brand'>
-                <GiPoliceBadge  className='icon_header'/> GOP
-            </div>
-        </div>
-
-        <ul className='sidebar-list'>
-            <a href="/dashboard">
-                <li className='sidebar-list-item d-flex align-items-center'>
-                        <BsGrid1X2Fill className='icon'/> Dashboard
-                </li>
-            </a>
-            <a onClick={logout}>
-                <li className='sidebar-list-item d-flex align-items-center'>
-                    <BiLogOut className='icon'/> Sair
-                </li>
-            </a>
+        <ul className='sidebar-list d-flex align-items-start flex-column'>
+            <li className='sidebar-list-item' onClick={() => navigate('/dashboard')}>
+                Dashboard
+            </li>
+            <li className='sidebar-list-item' onClick={() => navigate('/manutencao')}>
+                Manutençoes
+            </li>
+            <li className='sidebar-list-item' onClick={() => navigate('/caminhao')}>
+                Caminhões
+            </li>
+            <li className='sidebar-list-item' onClick={() => navigate('/oficina')}>
+                Oficinas
+            </li>
+            <li onClick={logout} className='sidebar-list-item'>
+                <BiLogOut className='icon'/>Sair
+            </li>
         </ul>
     </aside>
   )

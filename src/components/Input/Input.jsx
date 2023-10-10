@@ -3,7 +3,7 @@ import { Form } from "react-bootstrap";
 export function Input(props) {
     return(
         <Form.Group className='mb-4'>
-            <Form.Label>{props.label}</Form.Label>
+            <Form.Label className="mb-0">{props.label}</Form.Label>
                 <Form.Control 
                     type={props.type} 
                     placeholder={props.placeholder}

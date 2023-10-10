@@ -4,6 +4,7 @@ import { AuthContextProvider } from "./contexts/AuthContext";
 import { Login } from "./pages/Login";
 import { Register } from "./pages/Register";
 import { Dashboard } from "./pages/Dashboard";
+import { Caminhao } from "./pages/Caminhao";
 
 export const isAuthenticated = () => {
     const token = sessionStorage.getItem('token');
@@ -26,6 +27,7 @@ export function Navigations() {
                     <Route path="/" element={<Login />} />
                     <Route path="/register" element={<Register />} />
                     <Route path='/dashboard' element={<Dashboard />}/>
+                    <Route path='/caminhao' element={<Caminhao />}/>
                 </Routes>
             </AuthContextProvider>
         </BrowserRouter>

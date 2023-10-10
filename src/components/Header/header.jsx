@@ -1,25 +1,21 @@
 import React from 'react'
-import { GiHamburgerMenu } from 'react-icons/gi'
+import { Container, Nav, Navbar } from 'react-bootstrap';
 
-export function Header({OpenSidebar}) {
+export function Header() {
+
   return (
-    <header className='header'>
-      <div className='w-100'>
-
-        <div>
-            <a className='curs' onClick={OpenSidebar}>
-                <GiHamburgerMenu color='black' className='icon-hamburger m-3'/>
-            </a>
-            <a href='/dashboard'>
-                {/* <img src={img} className='menu-icon' alt="" /> */}
-            </a>
-        </div>
-
-      </div>
-
-      <div className='w-100 color1'>
-          {/* <img className='menu-icon' src={logo} alt="" /> */}
-      </div>
-    </header>
+    <Navbar bg="primary" data-bs-theme="dark" expand="md" >
+      <Container>
+        <Navbar.Brand href="/dashboard">Gestão de Caminhões</Navbar.Brand>
+        <Navbar.Toggle aria-controls="basic-navbar-nav " />
+        <Navbar.Collapse id="basic-navbar-nav">
+          <Nav className="me-auto">
+            <Nav.Link href="/caminhao">Caminhões</Nav.Link>
+            <Nav.Link href="/manutencao">Manutenções</Nav.Link>
+            <Nav.Link href="/oficina">Oficinas</Nav.Link>
+          </Nav>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
   )
 }
