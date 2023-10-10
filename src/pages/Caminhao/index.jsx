@@ -1,6 +1,5 @@
 import React from "react";
 import { useState } from "react";
-import { Sidebar } from "../../components/Sidebar/sidebar";
 import { Header } from "../../components/Header/header";
 import { Button, Col, Modal, Row } from "react-bootstrap";
 import { useForm } from "react-hook-form";
@@ -15,12 +14,7 @@ export function Caminhao() {
         formState: { errors },
     } = useForm();
 
-    const [openSidebarToggle, setOpenSidebarToggle] = useState(false);
     const [isCreated, setIsCreated] = useState(false);
-
-    const OpenSidebar = () => {        
-        setOpenSidebarToggle(!openSidebarToggle);
-    };
 
     async function addCaminhao(data){
         try {
@@ -38,12 +32,8 @@ export function Caminhao() {
 
     return (
         <main className="main-container">
-            <Header OpenSidebar={OpenSidebar} />
+            <Header/>
             <div className="d-flex flex-grow-1">
-                <Sidebar
-                    openSidebarToggle={!openSidebarToggle}
-                    OpenSidebar={OpenSidebar}
-                />
                 <div className="p-3 w-100">
                     <Row>
                         <Col md={12} className="mt-2 d-flex justify-content-center">
