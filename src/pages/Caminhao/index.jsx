@@ -4,10 +4,9 @@ import { Header } from "../../components/Header/header";
 import { Button, Col, Modal, Row } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { Input } from "../../components/Input/Input";
-import { createCaminhao, getCaminhoes, updateCaminhao } from "../../services/caminhao-service";
+import { createCaminhao, deleteCaminhao, getCaminhoes, updateCaminhao } from "../../services/caminhao-service";
 import { ToastContainer, toast } from 'react-toastify';
 import { AuthContext } from '../../contexts/AuthContext';
-import { MeuModal } from "../../components/MeuModal/MeuModal";
 
 export function Caminhao() {    
     const { logout } = useContext(AuthContext);
@@ -19,9 +18,11 @@ export function Caminhao() {
 
     const [isCreated, setIsCreated] = useState(false);
     const [isUpdated, setIsUpdated] = useState(false);
+    const [isDeleted, setIsDeleted] = useState(false);
     const [ordemId, setOrdemId] = useState('decrescente');
     const [caminhoes, setCaminhoes] = useState();
-    const [caminhaoEdit, setCaminhaoEdit] = useState();   
+    const [modeloCaminhaoEdit, setModeloCaminhaoEdit] = useState('modelo');   
+    const [idCaminhaoEdit, setIdCaminhaoEdit] = useState(null);
 
     useEffect(()=>{
         findCaminhoes();
@@ -51,6 +52,32 @@ export function Caminhao() {
         }
     }
 
+    async function editCaminhao(data){
+        try {
+            await updateCaminhao({
+                id: idCaminhaoEdit,
+                modelo: data.modelo,
+                placa: data.placa,
+                ano: data.ano
+            });
+            await findCaminhoes();
+            setIsUpdated(false);
+            toast.success('Caminhão editado com sucesso!');
+        } catch (error) {
+            toast.error(error);
+        }
+    }
+
+    async function delCaminhao(){
+        try {
+            await deleteCaminhao(idCaminhaoEdit)
+            setIsDeleted(false);
+            toast.success('Caminhão editado com sucesso!');
+            await findCaminhoes();
+        } catch (error) {
+            toast.error(error);            
+        }
+    }
 
     const handleOrdem = () =>{
         if( ordemId === 'crescente'){
@@ -98,12 +125,18 @@ export function Caminhao() {
                                 <th scope="col">{caminhao.ano}</th>
                                 <th scope="col" className="p-1">
                                     <Button scope="col" onClick={()=>{
-                                        setCaminhaoEdit(caminhao);
+                                        setModeloCaminhaoEdit(caminhao.modelo);
+                                        setIdCaminhaoEdit(caminhao.id);
                                         setIsUpdated(true);
                                     }}>Editar</Button>
                                 </th>
                                 <th scope="col" className="p-1">
-                                    <Button className="btn btn-danger" scope="col">
+                                    <Button className="btn btn-danger" scope="col"
+                                    onClick={()=>{
+                                        setIsDeleted(true);
+                                        setModeloCaminhaoEdit(caminhao.modelo);
+                                        setIdCaminhaoEdit(caminhao.id);
+                                    }}>
                                         Deletar
                                     </Button>
                                 </th>
@@ -191,13 +224,13 @@ export function Caminhao() {
             </Modal>
             
             {/* Modal de Editar */}
-            {/* <Modal
+            <Modal
                 show={isUpdated}
                 onHide={() => setIsUpdated(false)}
             >
                 <Modal.Header className="justify-content-center text-primary">
                     <Modal.Title>
-                        Editar caminhão
+                        Editar {modeloCaminhaoEdit}
                     </Modal.Title>
                 </Modal.Header>
                 <form
@@ -209,7 +242,7 @@ export function Caminhao() {
                         <Input 
                             label='Caminhão'
                             type='text'
-                            defaultValue={caminhaoEdit? caminhaoEdit.modelo : ''}
+                            placeholder='Modelo do caminhão'
                             name='modelo'
                             error={errors.modelo}
                             validations={register('modelo', {
@@ -220,10 +253,10 @@ export function Caminhao() {
                             })}
                         />
                         <Input 
-                            label='Placa do caminhão'
+                            label='Placa'
                             type='text'
                             name='placa'
-                            defaultValue={caminhaoEdit ? caminhaoEdit.placa : ''}
+                            placeholder='Placa do caminhão'
                             error={errors.placa}
                             validations={register('placa', {
                                 required:{
@@ -236,7 +269,6 @@ export function Caminhao() {
                             label='Ano do caminhão'
                             type='date'
                             name='ano'
-                            defaultValue={caminhaoEdit ? caminhaoEdit.ano : ''}
                             error={errors.ano}
                             validations={register('ano', {
                                 required:{
@@ -258,21 +290,30 @@ export function Caminhao() {
                         </Button>
                     </Modal.Footer>                
                 </form>
-            </Modal> */}
-
-            <MeuModal 
-                show={isUpdated}
-                onHide={() => setIsUpdated(false)}
-                btnConcluir='Editar'
-                modalTitle='Editar Caminhão'
-                label='Caminhão'
-                defaultValue={caminhaoEdit ? caminhaoEdit.modelo : ''}
-                name='modelo'
-                error={errors.modelo}
-
-            />
+            </Modal>
 
             {/* Modal de Confirmar Delete */}
+            <Modal
+                show={isDeleted}
+                onHide={() => setIsDeleted(false)}
+            >
+                <Modal.Header>
+                    <Modal.Title>
+                        Excluir: {modeloCaminhaoEdit}?
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Footer>
+                    <Button
+                        variant="secondary"
+                        onClick={() => setIsDeleted(false)}>Não excluir
+                    </Button>
+                    <Button
+                        variant='danger'
+                        onClick={()=>delCaminhao()}>Sim, excluir
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
 
             <ToastContainer
                 position="top-right"

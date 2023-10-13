@@ -39,3 +39,14 @@ export async function updateCaminhao(data){
     });
     return result;
 }
+
+
+export async function deleteCaminhao(id) {
+    const accessToken = sessionStorage.getItem('token');
+    const result = await api.delete(`/caminhao/delete/${id}`, {
+        headers: {
+            'Authorization': `Bearer ${JSON.parse(accessToken)}`
+        }
+    });
+    return result;
+};
