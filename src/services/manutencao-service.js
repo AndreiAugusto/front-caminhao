@@ -1,6 +1,6 @@
 import { api } from './api';
 
-export async function createOficina(data){
+export async function createManutencao(data){
     const accessToken = sessionStorage.getItem('token');
     const result = await api.post('/oficina/create', {
         nomeOficina: data.nomeOficina
@@ -12,11 +12,11 @@ export async function createOficina(data){
     return result;
 }
 
-export async function getOficinas(ord){
+export async function getManutencao(ord){
     const accessToken = sessionStorage.getItem('token');
     let defaut = 'decrescente'
     if(ord) defaut = ord;
-    const result = await api.get(`/oficina/getAll?ordenacao=${defaut}`,{
+    const result = await api.get(`/manutencao/getAll?ordenacao=${defaut}`,{
         headers: {
             'Authorization': `Bearer ${JSON.parse(accessToken)}`
         }        
@@ -24,7 +24,7 @@ export async function getOficinas(ord){
     return result;
 }
 
-export async function updateOficina(data){
+export async function updateManutencao(data){
     const accessToken = sessionStorage.getItem('token');
     const result = await api.put(`/oficina/update/${data.id}`,{
         nomeOficina: data.nomeOficina
@@ -37,7 +37,7 @@ export async function updateOficina(data){
 }
 
 
-export async function deleteOficina(id) {
+export async function deleteManutencao(id) {
     const accessToken = sessionStorage.getItem('token');
     const result = await api.delete(`/oficina/delete/${id}`, {
         headers: {

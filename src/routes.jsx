@@ -6,6 +6,7 @@ import { Register } from "./pages/Register";
 import { Dashboard } from "./pages/Dashboard";
 import { Caminhao } from "./pages/Caminhao";
 import { Oficina } from "./pages/Oficina";
+import { Manutencao } from "./pages/Manutencao";
 
 export const isAuthenticated = () => {
     const token = sessionStorage.getItem('token');
@@ -30,6 +31,7 @@ export function Navigations() {
                     <Route path='/dashboard' element={<Dashboard />}/>
                     <Route path='/caminhao' element={<Caminhao />}/>
                     <Route path='/oficina' element={<Oficina />}/>
+                    <Route path='/manutencao' element={<Manutencao />}/>                    
                 </Routes>
             </AuthContextProvider>
         </BrowserRouter>

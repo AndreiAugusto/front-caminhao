@@ -6,13 +6,14 @@ import { useForm } from "react-hook-form";
 import { Input } from "../../components/Input/Input";
 import { ToastContainer, toast } from 'react-toastify';
 import { AuthContext } from '../../contexts/AuthContext';
-import { createOficina, getOficinas } from "../../services/oficina-service";
+import { createOficina, getOficinas, deleteOficina, updateOficina } from "../../services/oficina-service";
 
 export function Oficina() {    
     const { logout } = useContext(AuthContext);
     const {
         register,
         handleSubmit,
+        reset,
         formState: { errors },
     } = useForm();
 
@@ -42,25 +43,22 @@ export function Oficina() {
         try {
             console.log(data)
             await createOficina({
-                nomeOficina: data.nomeOficina           
+                nomeOficina: data.nomeOficina
             });
             setIsCreated(false);
             toast.success('Oficina criada com sucesso');
             findOficinas();
         } catch (error) { 
-            toast.error(error)            
+            toast.error(error)
         }
     }
 
     async function editOficina(data){
         try {
-            console.log(data)
-            // await updateOficina({
-            //     id: idOficinaEdit,
-            //     modelo: data.modelo,
-            //     placa: data.placa,
-            //     ano: data.ano
-            // });
+            await updateOficina({
+                id: idOficinaEdit,
+                nomeOficina: data.nomeOficina
+            });
             await findOficinas();
             setIsUpdated(false);
             toast.success('Oficina editada com sucesso!');
@@ -71,13 +69,12 @@ export function Oficina() {
 
     async function delOficina(){
         try {
-            console.log(idOficinaEdit)
-            // await deleteOficina(idOficinaEdit)
+            await deleteOficina(idOficinaEdit)
             setIsDeleted(false);
-            toast.success('Oficina editada com sucesso!');
+            toast.success('Oficina deletada com sucesso!');
             await findOficinas();
         } catch (error) {
-            toast.error(error);            
+            toast.error(error);
         }
     }
 
@@ -152,7 +149,10 @@ export function Oficina() {
             {/* Modal de Criar */}
             <Modal
                 show={isCreated}
-                onHide={() => setIsCreated(false)}
+                onHide={() => {
+                    setIsCreated(false);
+                    reset();
+                }}
             >
                 <Modal.Header className="justify-content-center text-primary">
                     <Modal.Title>
@@ -194,9 +194,12 @@ export function Oficina() {
             </Modal>
             
             {/* Modal de Editar */}
-            {/* <Modal
+            <Modal
                 show={isUpdated}
-                onHide={() => setIsUpdated(false)}
+                onHide={() => {
+                    setIsUpdated(false);
+                    reset();
+                }}
             >
                 <Modal.Header className="justify-content-center text-primary">
                     <Modal.Title>
@@ -210,40 +213,15 @@ export function Oficina() {
                 >
                     <Modal.Body>
                         <Input 
-                            label='Caminhão'
+                            label='Oficina'
                             type='text'
-                            placeholder='Modelo do caminhão'
-                            name='modelo'
-                            error={errors.modelo}
-                            validations={register('modelo', {
+                            placeholder='Nome da Oficina'
+                            name='nomeOficina'
+                            error={errors.nomeOficina}
+                            validations={register('nomeOficina', {
                                 required:{
                                     value: true,
-                                    message:'Nome do caminhão obrigatório!'
-                                }
-                            })}
-                        />
-                        <Input 
-                            label='Placa'
-                            type='text'
-                            name='placa'
-                            placeholder='Placa do caminhão'
-                            error={errors.placa}
-                            validations={register('placa', {
-                                required:{
-                                    value: true,
-                                    message:'Placa do caminhão é obrigatoria!'
-                                }
-                            })}
-                        />
-                        <Input 
-                            label='Ano do caminhão'
-                            type='date'
-                            name='ano'
-                            error={errors.ano}
-                            validations={register('ano', {
-                                required:{
-                                    value: true,
-                                    message:'Ano do caminhão é obrigatorio!'
+                                    message:'Nome da oficina obrigatório!'
                                 }
                             })}
                         />
@@ -260,12 +238,15 @@ export function Oficina() {
                         </Button>
                     </Modal.Footer>                
                 </form>
-            </Modal> */}
+            </Modal>
 
             {/* Modal de Confirmar Delete */}
             <Modal
                 show={isDeleted}
-                onHide={() => setIsDeleted(false)}
+                onHide={() => {
+                    setIsDeleted(false);
+                    reset();
+                }}
             >
                 <Modal.Header>
                     <Modal.Title>
