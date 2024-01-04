@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { Input } from "../../components/Input/Input";
 import { ToastContainer, toast } from 'react-toastify';
 import { AuthContext } from '../../contexts/AuthContext';
-import { createManutencao, getManutencao } from "../../services/manutencao-service";
+import { createManutencao, getManutencao, deleteManutencao, updateManutencao } from "../../services/manutencao-service";
 import { getCaminhoes } from "../../services/caminhao-service";
 import { getOficinas } from "../../services/oficina-service";
 
@@ -99,6 +99,42 @@ export function Manutencao(){
             }
         } catch (error) { 
             toast.error(error)            
+        }
+    }
+    
+    async function delManutencao(){
+        try {
+            await deleteManutencao(idManutencao);
+            setIsDeleted(false);
+            toast.success('Manutenção deletada com sucesso!');
+            await findManutencao();
+        } catch (error) {
+            toast.error(error);            
+        }
+    }
+    
+    async function editManutencao(data){
+        try {            
+            const dataHoje = new Date();
+            const dataSelecionada = new Date(data.data);
+            if(dataSelecionada > dataHoje){
+                toast.error('Data invalida');
+
+            }else{
+                await updateManutencao({
+                    id: idManutencao,
+                    descricao: data.descricao,
+                    custo: data.custo,
+                    data: data.data,
+                    oficinaId: data.oficinaId,
+                    caminhaoId: data.caminhaoId
+                });
+                await findManutencao();
+                setIsUpdated(false);
+                toast.success('Oficina editada com sucesso!');
+            }
+        } catch (error) {
+            toast.error(error);
         }
     }
 
@@ -301,6 +337,153 @@ export function Manutencao(){
                 </form>
             </Modal>
 
+            {/* Modal confirmar delete */}
+            <Modal
+                show={isDeleted}
+                onHide={() => setIsDeleted(false)}
+            >
+                <Modal.Header>
+                    <Modal.Title>
+                        Excluir: {descManutencao}?
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Footer>
+                    <Button
+                        variant="secondary"
+                        onClick={() => setIsDeleted(false)}>Não excluir
+                    </Button>
+                    <Button
+                        variant='danger'
+                        onClick={()=>delManutencao()}>Sim, excluir
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+            
+            {/* Modal de Editar */}
+            <Modal
+                show={isUpdated}
+                onHide={() => setIsUpdated(false)}
+            >
+                <Modal.Header className="justify-content-center text-primary">
+                    <Modal.Title>
+                        Editar {descManutencao}
+                    </Modal.Title>
+                </Modal.Header>
+                <form
+                    className="m-auto w-100"
+                    noValidate
+                    onSubmit={handleSubmit(editManutencao)}
+                >
+                    <Modal.Body>
+                        <Input 
+                            label='Descrição'
+                            type='text'
+                            placeholder='Digite a descrição'
+                            name='descricao'
+                            error={errors.descricao}
+                            validations={register('descricao', {
+                                required:{
+                                    value: true,
+                                    message:'Descrição da manutenção obrigatório!'
+                                }
+                            })}
+                        />
+                        <Input 
+                            label='Custo'
+                            type='number'
+                            placeholder='Insira o valor'
+                            name='custo'
+                            error={errors.custo}
+                            validations={register('custo', {
+                                required:{
+                                    value: true,
+                                    message:'Custo obrigatório!'
+                                }
+                            })}
+                        />
+                        <Input 
+                            label='Data'
+                            type='date'
+                            name='data'
+                            error={errors.data}
+                            validations={register('data', {
+                                required:{
+                                    value: true,
+                                    message:'Data obrigatório!'
+                                }
+                            })}
+                        />
+                        <Form.Group className='mb-4'>
+                            <Form.Label className="mb-0">Caminhão</Form.Label>
+                            <Form.Control
+                                as="select"
+                                placeholder='Caminhão'
+                                name='caminhaoId'
+                                isInvalid={!!errors.caminhaoId}
+                                {...register('caminhaoId', {
+                                    required: {
+                                        value: true,
+                                        message: 'Caminhão obrigatório!'
+                                    }
+                                })}
+                            >
+                                <option value="">Selecione um caminhão</option>
+                                {caminhoes.map(caminhao => (
+                                    <option key={caminhao.id} value={caminhao.id}>
+                                        {caminhao.modelo}
+                                    </option>
+                                ))}
+                            </Form.Control>
+                            {errors.caminhaoId &&
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.caminhaoId.message}
+                                </Form.Control.Feedback>
+                            }
+                        </Form.Group>
+                        <Form.Group className='mb-4'>
+                            <Form.Label className="mb-0">Oficina</Form.Label>
+                            <Form.Control
+                                as="select"
+                                placeholder='Oficina'
+                                name='oficinaId'
+                                isInvalid={!!errors.oficinaId}
+                                {...register('oficinaId', {
+                                    required: {
+                                        value: true,
+                                        message: 'Oficina obrigatório!'
+                                    }
+                                })}
+                            >
+                                <option value="">Selecione uma oficina</option>
+                                {oficinas.map(oficina => (
+                                    <option key={oficina.id} value={oficina.id}>
+                                        {oficina.nomeOficina}
+                                    </option>
+                                ))}
+                            </Form.Control>
+                            {errors.oficinaId &&
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.oficinaId.message}
+                                </Form.Control.Feedback>
+                            }
+                        </Form.Group>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button
+                            variant="secondary"
+                            onClick={() => {
+                                setIsUpdated(false);
+                                reset();
+                            }}
+                        >
+                            Fechar
+                        </Button>
+                        <Button variant="primary" type="submit">
+                            Editar
+                        </Button>
+                    </Modal.Footer>                
+                </form>
+            </Modal>
             
             <ToastContainer
                 position="top-right"

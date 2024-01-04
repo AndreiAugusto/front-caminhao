@@ -88,7 +88,7 @@ export function Caminhao() {
         try {
             await deleteCaminhao(idCaminhaoEdit)
             setIsDeleted(false);
-            toast.success('Caminhão editado com sucesso!');
+            toast.success('Caminhão deletado com sucesso!');
             await findCaminhoes();
         } catch (error) {
             toast.error(error);            
@@ -303,7 +303,10 @@ export function Caminhao() {
                     <Modal.Footer>
                         <Button
                             variant="secondary"
-                            onClick={() => setIsUpdated(false)}
+                            onClick={() => {
+                                setIsUpdated(false);
+                                reset();
+                            }}
                         >
                             Fechar
                         </Button>

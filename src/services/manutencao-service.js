@@ -30,8 +30,12 @@ export async function getManutencao(ord){
 
 export async function updateManutencao(data){
     const accessToken = sessionStorage.getItem('token');
-    const result = await api.put(`/oficina/update/${data.id}`,{
-        nomeOficina: data.nomeOficina
+    const result = await api.put(`/manutencao/update/${data.id}`,{
+        descricao: data.descricao, 
+        custo: data.custo, 
+        data: data.data,
+        oficinaId: data.oficinaId,
+        caminhaoId: data.caminhaoId
     }, {
         headers: {
             'Authorization': `Bearer ${JSON.parse(accessToken)}`
@@ -43,7 +47,7 @@ export async function updateManutencao(data){
 
 export async function deleteManutencao(id) {
     const accessToken = sessionStorage.getItem('token');
-    const result = await api.delete(`/oficina/delete/${id}`, {
+    const result = await api.delete(`/manutencao/delete/${id}`, {
         headers: {
             'Authorization': `Bearer ${JSON.parse(accessToken)}`
         }
