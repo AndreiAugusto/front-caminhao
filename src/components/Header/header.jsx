@@ -12,9 +12,9 @@ export function Header() {
         <Navbar.Toggle aria-controls="basic-navbar-nav " />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link href="/caminhao">Caminhões</Nav.Link>
             <Nav.Link href="/manutencao">Manutenções</Nav.Link>
             <Nav.Link href="/oficina">Oficinas</Nav.Link>
+            <Nav.Link href="/caminhao">Caminhões</Nav.Link>
             <Nav.Link onClick={logout}>Sair</Nav.Link>
           </Nav>
         </Navbar.Collapse>

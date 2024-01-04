@@ -133,7 +133,7 @@ export function Caminhao() {
                         <tr>
                             <th scope="col" className="cursor-pointer" onClick={handleOrdem} style={{ width: '10%' }}>Id</th>
                             <th scope="col" style={{ width: '30%' }}>Caminhão</th>
-                            <th scope="col" style={{ width: '30%' }}>placa</th>
+                            <th scope="col" style={{ width: '30%' }}>Placa</th>
                             <th scope="col" style={{ width: '30%' }}>Ano</th>
                             <th scope="col"></th>
                             <th scope="col"></th>

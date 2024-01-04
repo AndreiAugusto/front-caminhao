@@ -28,7 +28,7 @@ export function Login () {
             theme="light"
         />
         <Row>
-            <Col md={6} className='m-auto mt-5 bg-light p-5 rounded'>
+            <Col md={6} className='m-auto mt-5 bg-light p-5 rounded margin-responsive'>
             <h1 className='text-center mb-3'>Faça seu login</h1>
             <Form className='d-flex flex-column' noValidate onSubmit={handleSubmit(login)}>
                 <Input

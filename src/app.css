@@ -16,7 +16,7 @@ body {
 }
 
 .main-container {
-  height: 100vh;
+  min-height: 100vh;
   background-color: white;
 }
 
@@ -89,5 +89,12 @@ body {
   .charts {
     grid-template-columns: 1fr;
     margin-top: 30px;
+  }
+}
+
+@media screen and (max-height: 500px){
+  .margin-responsive{
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
   }
 }
