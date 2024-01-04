@@ -7,6 +7,7 @@ import { Input } from "../../components/Input/Input";
 import { ToastContainer, toast } from 'react-toastify';
 import { AuthContext } from '../../contexts/AuthContext';
 import { createOficina, getOficinas, deleteOficina, updateOficina } from "../../services/oficina-service";
+import { getSomaDeUmaOficina } from "../../services/dashboard-service";
 
 export function Oficina() {    
     const { logout } = useContext(AuthContext);
@@ -46,6 +47,7 @@ export function Oficina() {
             });
             setIsCreated(false);
             toast.success('Oficina criada com sucesso');
+            reset();
             findOficinas();
         } catch (error) { 
             toast.error(error)
@@ -68,10 +70,16 @@ export function Oficina() {
 
     async function delOficina(){
         try {
-            await deleteOficina(idOficinaEdit)
-            setIsDeleted(false);
-            toast.success('Oficina deletada com sucesso!');
-            await findOficinas();
+            const nDeManutuencoesDaOficina = await getSomaDeUmaOficina(idOficinaEdit);
+            if(nDeManutuencoesDaOficina.data > 0){
+                toast.error('Oficina não pode ser deletada, pois já existe manutenção cadastrada em seu nome!');
+                setIsDeleted(false);
+            }else{
+                await deleteOficina(idOficinaEdit)
+                setIsDeleted(false);
+                toast.success('Oficina deletada com sucesso!');
+                await findOficinas();
+            }
         } catch (error) {
             toast.error(error);
         }

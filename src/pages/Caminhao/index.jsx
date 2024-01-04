@@ -7,6 +7,7 @@ import { Input } from "../../components/Input/Input";
 import { createCaminhao, deleteCaminhao, getCaminhoes, updateCaminhao } from "../../services/caminhao-service";
 import { ToastContainer, toast } from 'react-toastify';
 import { AuthContext } from '../../contexts/AuthContext';
+import { getSomaDeUmCaminhao } from "../../services/dashboard-service";
 
 export function Caminhao() {    
     const { logout } = useContext(AuthContext);
@@ -54,6 +55,7 @@ export function Caminhao() {
                 });
                 setIsCreated(false);
                 toast.success('Caminhão criado com sucesso');
+                reset();
                 findCaminhoes();
             }
         } catch (error) {
@@ -86,10 +88,17 @@ export function Caminhao() {
 
     async function delCaminhao(){
         try {
-            await deleteCaminhao(idCaminhaoEdit)
-            setIsDeleted(false);
-            toast.success('Caminhão deletado com sucesso!');
-            await findCaminhoes();
+            const nDeManutencoesDoCaminhao = await getSomaDeUmCaminhao(idCaminhaoEdit)
+            console.log(nDeManutencoesDoCaminhao.data)
+            if(nDeManutencoesDoCaminhao.data > 0){
+                toast.error('Caminhão não pode ser deletado, pois já existe manutenção cadastrado em seu nome!');
+                setIsDeleted(false);
+            }else{
+                await deleteCaminhao(idCaminhaoEdit)
+                setIsDeleted(false);
+                toast.success('Caminhão deletado com sucesso!');
+                await findCaminhoes();
+            }
         } catch (error) {
             toast.error(error);            
         }

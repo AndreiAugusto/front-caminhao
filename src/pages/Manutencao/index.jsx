@@ -66,19 +66,42 @@ export function Manutencao(){
         }
     }
         
-    const handleOrdem = () =>{
-        if( ordemId === 'crescente'){
-            setOrdemId('decrescente');
-            findManutencao();
-        } else {
-            setOrdemId('crescente');
-            findManutencao();
+    const handleOrdem = (data) =>{
+        switch(data){
+            case 'id':
+                if(ordemId === 'decrescente') setOrdemId('crescente');
+                else setOrdemId('decrescente');
+                findManutencao();
+                break;
+            case 'custo':
+                if(ordemId === 'custoAsc') setOrdemId('custoDesc');
+                else setOrdemId('custoAsc');
+                findManutencao();
+                break;
+            case 'data':
+                if(ordemId ==='dataAsc') setOrdemId('dataDesc');
+                else setOrdemId('dataAsc');
+                findManutencao();
+                break;
+            case 'caminhao':
+                if(ordemId ==='caminhaoAsc') setOrdemId('caminhaoDesc');
+                else setOrdemId('caminhaoAsc');
+                findManutencao();
+                break;
+            case 'oficina':
+                if(ordemId ==='oficinaAsc') setOrdemId('oficinaDesc');
+                else setOrdemId('oficinaAsc');
+                findManutencao();
+                break;
+            default:
+                setOrdemId('decrescente');
+                findManutencao();
+                break;
         }
     }
 
     async function addManutencao(data){
-        try {
-            console.log(data)   
+        try {  
             const dataHoje = new Date();
             const dataSelecionada = new Date(data.data);
             if(dataSelecionada > dataHoje){
@@ -95,6 +118,7 @@ export function Manutencao(){
     
                 setIsCreated(false);
                 toast.success('Manutenção criada com sucesso');
+                reset();
                 findManutencao();
             }
         } catch (error) { 
@@ -158,12 +182,16 @@ export function Manutencao(){
                         <tr>
                             <th scope="col" style={{ width: '5%' }}
                              className="cursor-pointer"
-                             onClick={handleOrdem}>Id</th>
-                            <th scope="col" >Descrição</th>
-                            <th scope="col">Custo</th>
-                            <th scope="col">Data</th>
-                            <th scope="col">Caminhão</th>
-                            <th scope="col">Oficina</th>
+                             onClick={() => handleOrdem('id')}>Id</th>
+                            <th scope="col">Descrição</th>
+                            <th scope="col" className="cursor-pointer"
+                             onClick={() => handleOrdem('custo')}>Custo</th>
+                            <th scope="col" className="cursor-pointer"
+                             onClick={() => handleOrdem('data')}>Data</th>
+                            <th scope="col" className="cursor-pointer"
+                             onClick={() => handleOrdem('caminhao')}>Caminhão</th>
+                            <th scope="col" className="cursor-pointer"
+                             onClick={() => handleOrdem('oficina')}>Oficina</th>
                             <th scope="col" style={{ width: '5%' }}></th>
                             <th scope="col" style={{ width: '5%' }}></th>
                         </tr>
@@ -178,9 +206,9 @@ export function Manutencao(){
                                         style: "currency",
                                         currency: "BRL",
                                     })}</th>
-                                    <th>{manutencao.data}</th>
-                                    <th>{manutencao.caminhaoId}</th>
-                                    <th>{manutencao.oficinaId}</th>
+                                    <th>{new Date(manutencao.data).toLocaleDateString('pt-BR')}</th>
+                                    <th>{caminhoes.find((item) => item.id === manutencao.caminhaoId)?.modelo || 'Caminhão'}</th>
+                                    <th>{oficinas.find((item) => item.id === manutencao.oficinaId)?.nomeOficina || 'Oficina'}</th>
 
                                 {/* botoes */}
                                 <th scope="col" className="p-1">

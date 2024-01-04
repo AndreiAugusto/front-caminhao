@@ -26,6 +26,16 @@ export async function getCaminhoes(ord){
     return result;
 }
 
+export async function getCaminhao(id) {
+    const accessToken = sessionStorage.getItem('token');
+    const result = await api.get(`/caminhao/getOne/${id}`, {
+        headers: {
+            'Authorization': `Bearer ${JSON.parse(accessToken)}`
+        }
+    });
+    return result;
+};
+
 export async function updateCaminhao(data){
     const accessToken = sessionStorage.getItem('token');
     const result = await api.put(`/caminhao/update/${data.id}`,{
