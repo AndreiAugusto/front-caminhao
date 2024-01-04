@@ -78,17 +78,25 @@ export function Manutencao(){
 
     async function addManutencao(data){
         try {
-            console.log(data)
-            // await createManutencao({
-            //     descricao: data.descricao,
-            //     custo: data.custo,
-            //     data: data.data,
-            //     caminhaoId: data.caminhaoId,
-            //     oficinaId: data.oficinaId
-            // });
-            setIsCreated(false);
-            toast.success('Manutenção criada com sucesso');
-            findManutencao();
+            console.log(data)   
+            const dataHoje = new Date();
+            const dataSelecionada = new Date(data.data);
+            if(dataSelecionada > dataHoje){
+                toast.error('Data invalida');
+
+            }else{
+                await createManutencao({
+                    descricao: data.descricao,
+                    custo: data.custo,
+                    data: data.data,
+                    caminhaoId: data.caminhaoId,
+                    oficinaId: data.oficinaId
+                });
+    
+                setIsCreated(false);
+                toast.success('Manutenção criada com sucesso');
+                findManutencao();
+            }
         } catch (error) { 
             toast.error(error)            
         }
@@ -292,6 +300,20 @@ export function Manutencao(){
                     </Modal.Footer>
                 </form>
             </Modal>
+
+            
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+            />
         </main>
     )
 }

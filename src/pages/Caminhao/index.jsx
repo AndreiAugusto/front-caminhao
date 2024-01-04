@@ -11,6 +11,7 @@ import { AuthContext } from '../../contexts/AuthContext';
 export function Caminhao() {    
     const { logout } = useContext(AuthContext);
     const {
+        reset,
         register,
         handleSubmit,
         formState: { errors },
@@ -40,30 +41,44 @@ export function Caminhao() {
 
     async function addCaminhao(data){
         try {
-            await createCaminhao({
-                modelo: data.modelo,
-                placa: data.placa,
-                ano: data.ano                
-            });
-            setIsCreated(false);
-            toast.success('Caminhão criado com sucesso');
-            findCaminhoes();
+            const dataHoje = new Date();
+            const dataSelecionada = new Date(data.ano);
+            if(dataSelecionada > dataHoje){
+                toast.error('Data invalida');
+
+            }else{
+                await createCaminhao({
+                    modelo: data.modelo,
+                    placa: data.placa,
+                    ano: data.ano                
+                });
+                setIsCreated(false);
+                toast.success('Caminhão criado com sucesso');
+                findCaminhoes();
+            }
         } catch (error) {
             toast.error(error)            
         }
     }
 
     async function editCaminhao(data){
-        try {
-            await updateCaminhao({
-                id: idCaminhaoEdit,
-                modelo: data.modelo,
-                placa: data.placa,
-                ano: data.ano
-            });
-            await findCaminhoes();
-            setIsUpdated(false);
-            toast.success('Caminhão editado com sucesso!');
+        try {            
+            const dataHoje = new Date();
+            const dataSelecionada = new Date(data.ano);
+            if(dataSelecionada > dataHoje){
+                toast.error('Data invalida');
+
+            }else{
+                await updateCaminhao({
+                    id: idCaminhaoEdit,
+                    modelo: data.modelo,
+                    placa: data.placa,
+                    ano: data.ano
+                });
+                await findCaminhoes();
+                setIsUpdated(false);
+                toast.success('Caminhão editado com sucesso!');
+            }
         } catch (error) {
             toast.error(error);
         }
@@ -157,7 +172,10 @@ export function Caminhao() {
             {/* Modal de Criar */}
             <Modal
                 show={isCreated}
-                onHide={() => setIsCreated(false)}
+                onHide={() => {
+                    setIsCreated(false);
+                    reset();
+                }}
             >
                 <Modal.Header className="justify-content-center text-primary">
                     <Modal.Title>
@@ -212,7 +230,10 @@ export function Caminhao() {
                     <Modal.Footer>
                         <Button
                             variant="secondary"
-                            onClick={() => setIsCreated(false)}
+                            onClick={() => {
+                                setIsCreated(false);
+                                reset();
+                            }}
                         >
                             Fechar
                         </Button>

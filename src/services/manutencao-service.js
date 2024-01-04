@@ -2,8 +2,12 @@ import { api } from './api';
 
 export async function createManutencao(data){
     const accessToken = sessionStorage.getItem('token');
-    const result = await api.post('/oficina/create', {
-        nomeOficina: data.nomeOficina
+    const result = await api.post('/manutencao/create', {
+        descricao: data.descricao, 
+        custo: data.custo, 
+        data: data.data,
+        oficinaId: data.oficinaId,
+        caminhaoId: data.caminhaoId
     }, {
         headers: {
             'Authorization': `Bearer ${JSON.parse(accessToken)}`

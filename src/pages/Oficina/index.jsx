@@ -41,7 +41,6 @@ export function Oficina() {
 
     async function addOficina(data){
         try {
-            console.log(data)
             await createOficina({
                 nomeOficina: data.nomeOficina
             });
@@ -182,7 +181,10 @@ export function Oficina() {
                     <Modal.Footer>
                         <Button
                             variant="secondary"
-                            onClick={() => setIsCreated(false)}
+                            onClick={() => {
+                                setIsCreated(false);
+                                reset();                                
+                            }}
                         >
                             Fechar
                         </Button>
@@ -229,7 +231,10 @@ export function Oficina() {
                     <Modal.Footer>
                         <Button
                             variant="secondary"
-                            onClick={() => setIsUpdated(false)}
+                            onClick={() => {
+                                setIsUpdated(false);
+                                reset();
+                            }}
                         >
                             Fechar
                         </Button>
