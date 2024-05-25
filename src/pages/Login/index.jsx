@@ -1,9 +1,10 @@
+import styles from './styles.module.css'
 import { Input } from '../../components/Input/Input'
+
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import { AuthContext } from '../../contexts/AuthContext';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import { useContext } from 'react';
